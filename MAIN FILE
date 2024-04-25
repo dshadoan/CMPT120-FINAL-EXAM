@@ -1,46 +1,39 @@
 # CMPT120 FINAL PROJECT ATM PROGRAM
 
-def login(userData):
-    cardNumber= input("Type in your card number: ")
-    passcode= input("Type in 4-digit passcode: ")
-    if cardNumber in userData and userData[cardNumber]['passcode'] == passcode:
-        return cardNumber
-    else:
-        print("Card number or passcode is invalid. Please try again. ")
-        return None
-    
-    
-def withdraw(userData, cardNumber):
-    amount = float(input("Type in the amount you like to withdraw: "))
-    if amount <= userData [cardNumber] ["cardBalance"]:
-        userData [cardNumber] ["cardBalance"] -= amount
-        print(f"Withdrawl complete. Remaining balance: {userData[cardNumber]['cardBalance']}")
-    else:
-        print("Failed withdrawl due to insufficient funds.")
-
-
-
-def deposit(userData, cardNumber):
-    amount= float(input("Type in the amount you would like to deposit: "))
-    userData[cardnumber]["cardBalance"] += amount
-    print(f"Deposit complete. Current Balance: {userData[cardNumber]['cardBalance']}")
-
-
 def loadUserData():
     userData = {}
-    with open(loadUserData, "r") as file:
+    with open("userData", "r") as file:
         for line in file:
             cardNumber, cardPin, cardBalance = line.strip().split(",")
             userData[cardNumber] = (cardPin, float(cardBalance))
     return userData
 
+def verifyUser(userData, cardNumber, pin):
+    if cardNumber in userData:
+        storedPin = userData[cardNumber][0]
+        if storedPin == pin:
+            return True
+    return False
 
-def tranferFunction(userData, donorCardNumber):
-    recipientsCardNum = input("Enter the recipients card number: ")
+def withdraw(userData, cardNumber):
+    amount = float(input("Type in the amount you like to withdraw: "))
+    if amount <= userData[cardNumber][1]:
+        userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] - amount)
+        print(f"Withdrawal complete. Remaining balance: {userData[cardNumber][1]}")
+    else:
+        print("Failed withdrawal, insufficient funds.")
+
+def deposit(userData, cardNumber):
+    amount = float(input("Type in the amount you would like to deposit: "))
+    userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] + amount)
+    print(f"Deposit complete. Current Balance: {userData[cardNumber][1]}")
+
+def transferFunction(userData, donorCardNumber):
+    recipientsCardNum = input("Enter the recipient's card number: ")
     if recipientsCardNum not in userData:
         print("Recipient's account invalid.")
     else:
-        transferAmount = input(int("Enter transfer amount: "))
+        transferAmount = float(input("Enter transfer amount: "))
         if transferAmount > userData[donorCardNumber][1]:
             print("Transfer rejected due to insufficient funds.")
         else:
@@ -51,31 +44,30 @@ def main():
     userData = loadUserData()
 
     while True:
-            print("Hello. Welcome to the ATM.")
-            cardNumber = input("Please input your account number attached to your debit card.")
-            cardPin = input("Please enter your 4-digit pin number attached to your account.")
+        print("Hello. Welcome to the ATM.")
+        cardNumber = input("Please input your account number attached to your debit card: ")
+        cardPin = input("Please enter your 4-digit pin number attached to your account: ")
 
-            if verify(userData, cardNumber, cardPin):
-                print("Information Verified. Access Granted.")
+        if verifyUser(userData, cardNumber, cardPin):
+            print("Information Verified. Access Granted.")
 
-                while True:
-                    print("What action would you like to perform? \n1. Withdraw \n2. Deposit \n3. Log Out.")
-                    action = input("Enter the number for your choice: (1, 2, or 3).")
+            while True:
+                print("What action would you like to perform?\n1. Withdraw\n2. Deposit\n3. Transfer\n4. Log Out")
+                action = input("Enter the number for your choice: (1, 2, 3, or 4): ")
 
-                    if action == "1":
-                        amount = eval(input("Enter the amount you would like to withdraw: "))
-                        withdraw(userData, cardNumber, cardBalance)
-                    elif action == "2":
-                        amount = eval(input("Enter the amount you would like to deposit: "))
-                        deposit(userData, cardNumber, cardBalance)
-                    elif action == "3":
-                        print("Have a good day.")
-                        storeUserData(userData)
-                        exit()
-                    else:
-                        print("Please type in a valid choice of 1, 2, or 3.")
-            else:
-                print("Verification failed.")
+                if action == "1":
+                    withdraw(userData, cardNumber)
+                elif action == "2":
+                    deposit(userData, cardNumber)
+                elif action == "3":
+                    transferFunction(userData, cardNumber)
+                elif action == "4":
+                    print("Have a good day.")
+                    exit()
+                else:
+                    print("Please type in a valid choice of 1, 2, 3, or 4.")
+        else:
+            print("Verification failed.")
 
 if __name__ == "__main__":
     main()
