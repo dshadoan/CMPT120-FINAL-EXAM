@@ -46,3 +46,37 @@ def tranferFunction(userData, donorCardNumber):
         else:
             userData[donorCardNumber] = (userData[donorCardNumber][0], userData[donorCardNumber][1] - transferAmount)
             print("Transfer was successful.")
+
+def main():
+    userData = loadUserData()
+
+    while True:
+            print("Hello. Welcome to the ATM.")
+            cardNumber = input("Please input your account number attached to your debit card.")
+            cardPin = input("Please enter your 4-digit pin number attached to your account.")
+
+            if verify(userData, cardNumber, cardPin):
+                print("Information Verified. Access Granted.")
+
+                while True:
+                    print("What action would you like to perform? \n1. Withdraw \n2. Deposit \n3. Log Out.")
+                    action = input("Enter the number for your choice: (1, 2, or 3).")
+
+                    if action == "1":
+                        amount = eval(input("Enter the amount you would like to withdraw: "))
+                        withdraw(userData, cardNumber, cardBalance)
+                    elif action == "2":
+                        amount = eval(input("Enter the amount you would like to deposit: "))
+                        deposit(userData, cardNumber, cardBalance)
+                    elif action == "3":
+                        print("Have a good day.")
+                        storeUserData(userData)
+                        exit()
+                    else:
+                        print("Please type in a valid choice of 1, 2, or 3.")
+            else:
+                print("Verification failed.")
+
+if __name__ == "__main__":
+    main()
+
