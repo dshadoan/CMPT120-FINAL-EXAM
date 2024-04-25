@@ -1,2 +1,26 @@
 # CMPT120 FINAL PROJECT ATM PROGRAM
 
+def login(userData):
+    cardNumber= input("Type in your card number: ")
+    passcode= input("Type in 4-digit passcode: ")
+    if cardNumber in userData and userData[cardNumber]['passcode'] == passcode:
+        return cardNumber
+    else:
+        print("Card number or passcode is invalid. Please try again. ")
+        return None
+    
+    
+def withdraw(userData, cardNumber):
+    amount = float(input("Type in the amount you like to withdraw: "))
+    if amount <= userData [cardNumber] ["cardBalance"]:
+        userData [cardNumber] ["cardBalance"] -= amount
+        print(f"Withdrawl complete. Remaining balance: {userData[cardNumber]['cardBalance']}")
+    else:
+        print("Failed withdrawl due to insufficient funds.")
+
+
+
+def deposit(userData, cardNumber):
+    amount= float(input("Type in the amount you would like to deposit: "))
+    userData[cardnumber]["cardBalance"] += amount
+    print(f"Deposit complete. Current Balance: {userData[cardNumber]['cardBalance']}")
