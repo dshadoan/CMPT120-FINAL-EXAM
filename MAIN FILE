@@ -24,3 +24,25 @@ def deposit(userData, cardNumber):
     amount= float(input("Type in the amount you would like to deposit: "))
     userData[cardnumber]["cardBalance"] += amount
     print(f"Deposit complete. Current Balance: {userData[cardNumber]['cardBalance']}")
+
+
+def loadUserData():
+    userData = {}
+    with open(loadUserData, "r") as file:
+        for line in file:
+            cardNumber, cardPin, cardBalance = line.strip().split(",")
+            userData[cardNumber] = (cardPin, float(cardBalance))
+    return userData
+
+
+def tranferFunction(userData, donorCardNumber):
+    recipientsCardNum = input("Enter the recipients card number: ")
+    if recipientsCardNum not in userData:
+        print("Recipient's account invalid.")
+    else:
+        transferAmount = input(int("Enter transfer amount: "))
+        if transferAmount > userData[donorCardNumber][1]:
+            print("Transfer rejected due to insufficient funds.")
+        else:
+            userData[donorCardNumber] = (userData[donorCardNumber][0], userData[donorCardNumber][1] - transferAmount)
+            print("Transfer was successful.")
