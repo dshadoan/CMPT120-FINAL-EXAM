@@ -2,10 +2,12 @@
 
 def loadUserData():
     userData = {}
-    with open("userData", "r") as file:
+    lineNum = 0
+    with open("userData.txt", "r") as file:
         for line in file:
             cardNumber, cardPin, cardBalance = line.strip().split(",")
-            userData[cardNumber] = (cardPin, float(cardBalance))
+            userData[cardNumber] = (cardPin, float(cardBalance), lineNum)
+            lineNum = lineNum + 1
     return userData
 
 def verifyUser(userData, cardNumber, pin):
@@ -18,15 +20,33 @@ def verifyUser(userData, cardNumber, pin):
 def withdraw(userData, cardNumber):
     amount = float(input("Type in the amount you like to withdraw: "))
     if amount <= userData[cardNumber][1]:
-        userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] - amount)
+        userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] - amount, userData[cardNumber][2])
         print(f"Withdrawal complete. Remaining balance: {userData[cardNumber][1]}")
+        oldFile = open("userData.txt", "r")
+        oldFile = oldFile.readlines()
+        oldFile[userData[cardNumber][2]] = str(cardNumber) + "," + str(userData[cardNumber][0]) + "," + str(userData[cardNumber][1]) + "\n"
+        newStr = ""
+        for line in oldFile:
+            newStr = newStr + line
+        writeWithdraw = open("userData.txt", "w")
+        writeWithdraw.write(newStr)
+
     else:
         print("Failed withdrawal, insufficient funds.")
 
 def deposit(userData, cardNumber):
     amount = float(input("Type in the amount you would like to deposit: "))
-    userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] + amount)
+    userData[cardNumber] = (userData[cardNumber][0], userData[cardNumber][1] + amount, userData[cardNumber][2])
     print(f"Deposit complete. Current Balance: {userData[cardNumber][1]}")
+    oldFile = open("userData.txt", "r")
+    oldFile = oldFile.readlines()
+    oldFile[userData[cardNumber][2]] = str(cardNumber) + "," + str(userData[cardNumber][0]) + "," + str(
+        userData[cardNumber][1]) + "\n"
+    newStr = ""
+    for line in oldFile:
+        newStr = newStr + line
+    writeWithdraw = open("userData.txt", "w")
+    writeWithdraw.write(newStr)
 
 def transferFunction(userData, donorCardNumber):
     recipientsCardNum = input("Enter the recipient's card number: ")
@@ -37,9 +57,20 @@ def transferFunction(userData, donorCardNumber):
         if transferAmount > userData[donorCardNumber][1]:
             print("Transfer rejected due to insufficient funds.")
         else:
-            userData[donorCardNumber] = (userData[donorCardNumber][0], userData[donorCardNumber][1] - transferAmount)
-            userData[recipientsCardNum] = (userData[recipientsCardNum][0], userData[recipientsCardNum][1] + transferAmount)
-            print("Transfer was successful.")
+            userData[donorCardNumber] = (userData[donorCardNumber][0], userData[donorCardNumber][1] - transferAmount, userData[donorCardNumber][2])
+            userData[recipientsCardNum] = (userData[recipientsCardNum][0], userData[recipientsCardNum][1] + transferAmount, userData[recipientsCardNum][2])
+            print(f"Transfer was successful.You now have {userData[donorCardNumber][1]}" )
+            oldFile = open("userData.txt", "r")
+            oldFile = oldFile.readlines()
+            oldFile[userData[donorCardNumber][2]] = str(donorCardNumber) + "," + str(userData[donorCardNumber][0]) + "," + str(userData[donorCardNumber][1]) + "\n"
+            oldFile[userData[recipientsCardNum][2]] = str(recipientsCardNum) + "," + str(userData[recipientsCardNum][0]) + "," + str(userData[recipientsCardNum][1]) + "\n"
+
+            newStr = ""
+            for line in oldFile:
+                newStr = newStr + line
+            writeWithdraw = open("userData.txt", "w")
+            writeWithdraw.write(newStr)
+
 
 def main():
     userData = loadUserData()
@@ -73,7 +104,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# writeWithdraw = open("userData.txt", "w")
-# writeWithdraw.write(cardNumber + "," + userData[cardNumber][0] + "," + str(userData[cardNumber][1]))
