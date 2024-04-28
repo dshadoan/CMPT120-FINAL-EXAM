@@ -10,8 +10,8 @@ def loadUserData():
 
 def verifyUser(userData, cardNumber, pin):
     if cardNumber in userData:
-        storedPin = userData[cardNumber][0]
-        if storedPin == pin:
+        stored_password = userData[cardNumber][0]
+        if stored_password == pin:
             return True
     return False
 
@@ -38,6 +38,7 @@ def transferFunction(userData, donorCardNumber):
             print("Transfer rejected due to insufficient funds.")
         else:
             userData[donorCardNumber] = (userData[donorCardNumber][0], userData[donorCardNumber][1] - transferAmount)
+            userData[recipientsCardNum] = (userData[recipientsCardNum][0], userData[recipientsCardNum][1] + transferAmount)
             print("Transfer was successful.")
 
 def main():
@@ -53,7 +54,7 @@ def main():
 
             while True:
                 print("What action would you like to perform?\n1. Withdraw\n2. Deposit\n3. Transfer\n4. Log Out")
-                action = input("Enter the number for your choice: (1, 2, 3, or 4): ")
+                action = input("Enter the number for your choice (1, 2, 3, or 4): ")
 
                 if action == "1":
                     withdraw(userData, cardNumber)
@@ -63,6 +64,7 @@ def main():
                     transferFunction(userData, cardNumber)
                 elif action == "4":
                     print("Have a good day.")
+                    # storeUserData(userData)  # It seems you haven't defined this function.
                     exit()
                 else:
                     print("Please type in a valid choice of 1, 2, 3, or 4.")
@@ -71,4 +73,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
