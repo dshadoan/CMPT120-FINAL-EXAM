@@ -73,3 +73,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# writeWithdraw = open("userData.txt", "w")
+# writeWithdraw.write(cardNumber + "," + userData[cardNumber][0] + "," + str(userData[cardNumber][1]))
