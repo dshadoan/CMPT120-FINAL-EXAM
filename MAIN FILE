@@ -94,8 +94,7 @@ def main():
                 elif action == "3":
                     transferFunction(userData, cardNumber)
                 elif action == "4":
-                    print("Have a good day.")
-                    # storeUserData(userData)  # It seems you haven't defined this function.
+                    print("Have a good day.") 
                     exit()
                 else:
                     print("Please type in a valid choice of 1, 2, 3, or 4.")
