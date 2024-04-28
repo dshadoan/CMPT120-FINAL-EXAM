@@ -1,0 +1,21 @@
+# userDataManager.py
+
+# this library was created to do the reading and writing functions for us, rather
+# than using repetitive commands throughout the main project file.
+
+# These functions included are used to manage stored data in a simple txt file iteration system
+
+def loadUserData(filePath):
+    userData = {} # initializes empty dictionary, stores the user data
+    with open(filePath, "r") as file: # using with will automatically close the file once done reading information
+        for line in file: # this loop will split the lines into 3 variables
+            cardNumber, cardPin, cardBalance = line.strip().split(",")
+            userData[cardNumber] = (cardPin, float(cardBalance))
+    return userData
+
+def writeUserData(filePath, userData): # guides where the updated balances will be written
+    with open(filePath, "w") as file:
+        for cardNumber, (cardPin, cardBalance) in userData.items():
+            file.write(f"{cardNumber},{cardPin},{cardBalance}\n")
+                # loads user data from a file into a dictionary
+                # writes user data from dictionary to file
